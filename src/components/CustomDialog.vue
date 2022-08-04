@@ -5,19 +5,19 @@
 			<div class="grid_wrapper">
 				<div class="grid_item">
 					<p class="label">Имя</p>
-					<custom-input></custom-input>
+					<custom-input class="custom-element"></custom-input>
 				</div>
 				<div class="grid_item">
 					<p class="label">Телефон</p>
-					<custom-input></custom-input>
+					<custom-input class="custom-element"></custom-input>
 				</div>
 				<div class="grid_item">			
 					<p class="label">Email</p>		
-					<custom-input></custom-input>
+					<custom-input class="custom-element"></custom-input>
 				</div>
 				<div class="grid_item">
 					<p class="label">Город</p>
-					<custom-select></custom-select>
+					<custom-select class="custom-element"></custom-select>
 				</div>
 
 				<custom-button class="btn" :buttonObject="this.button"></custom-button>
@@ -59,18 +59,21 @@ export default {
 		min-height: 216px;
 		min-width: 300px;
 		padding: 10px;
+		h2 {
+			margin: 23px 0;
+		}
 		.grid_wrapper {
 			display: grid;
 			grid-template-columns: 170px 170px 170px 170px;
 			grid-template-rows: 62px 62px;
-			column-gap: 29px;
-			row-gap: 29px;
+			column-gap: 18px;
+			row-gap: 20px;
 			justify-content: center;
 			.grid_item {
 				display: flex;
 				flex-direction: column;
-				align-items: flex-end;
-				justify-content: left;
+				align-items: flex-start;
+				justify-content: space-between;
 				* {
 					width: 100%;
 					height: 100%;
@@ -78,15 +81,27 @@ export default {
 				}
 			}
 			.btn {
+				height: 38px;
 				transition: ease 0.4s;
 				border-radius: 6px;
 				background-color: #00b31e;
+				grid-column: 4;
 				&:hover {
 					cursor: pointer;
 				}
 				&:active {
 					background-color: #007914;
 				}
+			}
+			.label {
+				margin: 0;
+				width: max-content;
+				height: auto;
+				margin-left: 4px;
+				font-size: 16px;
+			}
+			.custom-element {
+				height: 38px;
 			}
 		}
 	}
