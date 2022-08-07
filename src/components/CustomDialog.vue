@@ -1,42 +1,72 @@
 <template>
-	<div class="dialog__background" @click.stop="hideDialog">
-		<div class="dialog__container">
+	<form class="dialog__background" v-if="show === true" @click.stop="hideDialog">
+		<div class="dialog__container" @click.stop>
 			<h2>Заказать звонок</h2>
 			<div class="grid_wrapper">
-				<div class="grid_item">
-					<p class="label">Имя</p>
-					<custom-input class="custom-element"></custom-input>
+				<div class="grid_item" v-for="input in inputs" :key="input.id">
+					<p class="label">{{input.title}}</p>
+					<custom-input class="custom-element" v-if="input?.mask" :inputType="input.type" :placeholderValue="input.placeholder" v-maska="input.mask"></custom-input>
+					<custom-input class="custom-element" v-else :inputType="input.type" :placeholderValue="input.placeholder"></custom-input>
 				</div>
-				<div class="grid_item">
-					<p class="label">Телефон</p>
-					<custom-input class="custom-element"></custom-input>
-				</div>
-				<div class="grid_item">			
-					<p class="label">Email</p>		
-					<custom-input class="custom-element"></custom-input>
-				</div>
-				<div class="grid_item">
-					<p class="label">Город</p>
-					<custom-select class="custom-element"></custom-select>
+				<div class="grid_item select_wrapper">
+					<p class="label">Город*</p>
+					<custom-select class="custom-element" v-model="selection" :options="dialogOptions"></custom-select>
 				</div>
 
 				<custom-button class="btn" :buttonObject="this.button"></custom-button>
 			</div>
 		</div>
-	</div>
+	</form>
 </template>
 
 <script>
 import toggleMixin from '@/mixins/toggleMixin';
+// import useVuelidate from '@vuelidate/core'
+// import { required, email } from '@vuelidate/validators'
 
 export default {
 	name: "custom-dialog",
+
+	// setup () {
+    // 	return { v$: useVuelidate() }
+  	// },
+
 	data() {
 		return {
-			button: {id: 1, value: "Отправить", type: "Text"},
+			button: {id: 1, value: "Отправить", type: "text"},
+			inputs: [
+				{id: 1, title: "Имя*", placeholder: "Иван Иванов", type: "tel", regex: "dfgdfgdf"},
+				{id: 2, title: "Телефон*", placeholder: "+7 (___) ___-__-__", type: "text", mask: '+7 (###) ###-##-##'},
+				{id: 3, title: "Email*", placeholder: "you@example.com", type: "email", regex: "fdhfgsdh"},
+			],
+			// sortOptions: [
+			// 	{value: "msk", name: "Москва"},
+			// 	{value: "spb", name: "Санкт-Петербург"},
+			// ],
 		}
 	},
+	props: {
+		selection: {
+			type: String,
+		},
+		dialogOptions: {
+			type: Array,
+			default: () => []
+		},
+	},
 	mixins: [toggleMixin],
+
+	// validations() {
+	// 	return {
+	// 		email: {
+	// 			required, email
+	// 		},
+	// 		name: {
+	// 			required, 
+	// 			min: minLength(2)
+	// 		},
+	// 	}
+  	// },
 }
 </script>
 
@@ -57,10 +87,13 @@ export default {
 		background: white;
 		border-radius: 8px;
 		min-height: 216px;
-		min-width: 300px;
+		// min-width: 300px;
 		padding: 10px;
 		h2 {
 			margin: 23px 0;
+			width: max-content;
+			text-align: left;
+			margin-left: 20px;
 		}
 		.grid_wrapper {
 			display: grid;
@@ -69,6 +102,8 @@ export default {
 			column-gap: 18px;
 			row-gap: 20px;
 			justify-content: center;
+			width: 100%;
+    		margin: 0 auto;
 			.grid_item {
 				display: flex;
 				flex-direction: column;
@@ -77,8 +112,14 @@ export default {
 				* {
 					width: 100%;
 					height: 100%;
-					box-sizing: border-box;	
+					box-sizing: border-box;
+					font-weight: 400;
+					font-size: 16px;
+					line-height: 20px;
 				}
+			}
+			.select_wrapper {
+				
 			}
 			.btn {
 				height: 38px;
@@ -102,6 +143,14 @@ export default {
 			}
 			.custom-element {
 				height: 38px;
+				border-radius: 6px;
+				border-color: #D1D5DB;
+				border-style: double;
+				padding-left: 13px;
+				&:focus {
+					border-color: #5791e7 !important;
+					outline-color: #5791e7;
+				}
 			}
 		}
 	}
@@ -114,19 +163,69 @@ export default {
 		border-end-start-radius: 12px;
 	}
 }
-@media only screen and (min-width: 744px) {
+@media only screen and (max-width: 1440px) {
 	.dialog__container {
-		min-width: 793px;
+		width: 669px !important;
+		min-height: 254px !important;
+		.grid_wrapper {
+			grid-template-columns: 190px 190px 190px !important;
+			.grid_item{
+				&:first-of-type {
+					grid-column: 2 !important;
+					grid-row: 1 !important;
+				}
+				&:nth-of-type(2) {
+					grid-column: 1 !important;
+					grid-row: 1 !important;
+				}
+				&:nth-of-type(3) {
+					grid-column: 0 !important;
+					grid-row: 1 !important;
+				}
+			}
+		}
+		.btn {
+			grid-column: 3 !important;
+			align-self: end !important;
+		}
+		.select_wrapper {
+			grid-column: 1/3 !important;
+		}
 	}
 }
 @media only screen and (max-width: 744px) {
 	.dialog__container {
-		min-width: 793px;
-	}
-}
-@media only screen and (max-width: 375px) {
-	.dialog__container {
-		min-width: 355px;
+		width: 355px !important;
+		min-height: 472px !important;
+		.grid_wrapper {
+			grid-template-columns: 315px !important;
+			grid-template-rows: repeat(62px) !important;
+			* {
+				grid-column: auto !important;
+				grid-row: auto !important;
+			}
+			.grid_item{
+				&:first-of-type {
+					grid-column: 1 !important;
+					grid-row: 2 !important;
+				}
+				&:nth-of-type(2) {
+					grid-column: 1 !important;
+					grid-row: 1 !important;
+				}
+				&:nth-of-type(3) {
+					grid-column: 1 !important;
+					grid-row: 3 !important;
+				}
+			}
+		}
+		.btn {
+			// grid-column: 3 !important;
+			align-self: end !important;
+		}
+		.select_wrapper {
+			// grid-column: 1/3 !important;
+		}
 	}
 }
 </style>

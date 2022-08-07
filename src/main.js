@@ -3,6 +3,8 @@ import App from './App.vue';
 import uis from "@/components/UI";
 import components from "@/components";
 import router from "@/router/index";
+import Maska from 'maska';
+// import Vuelidate from 'vuelidate';
 
 const app = createApp(App);
 
@@ -14,4 +16,7 @@ components.forEach(component => {
 	app.component(component.name, component)
 });
 
-app.use(router).mount('#app');
+app.use(router)
+.use(Maska)
+// .use(Vuelidate)
+.mount('#app');

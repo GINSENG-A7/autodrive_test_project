@@ -1,7 +1,7 @@
 <template>
 	<div class="header">
 		<div class="btns__wrapper">
-			<custom-button class="btn" v-for="button in buttonsContent" :key="button.id" :buttonObject="button" @click="showDialog"></custom-button>
+			<custom-button class="btn" v-for="button in buttonsContent" :key="button.id" :buttonObject="button" @click="showDialog(); setSelection(button.linkValue)"></custom-button>
 		</div>
 	</div>
 </template>
@@ -12,15 +12,19 @@ export default {
 	data() {
 		return {
 			buttonsContent: [
-                { id: 1, value: "Заказать в Москву", type: "Text" },
-                { id: 2, value: "Заказать в Санкт-Петербург", type: "Text" },
+                { id: 1, value: "Заказать в Москву", type: "Text", linkValue: "msk" },
+                { id: 2, value: "Заказать в Санкт-Петербург", type: "Text", linkValue: "spb" },
             ],
 		};
 	},
 	methods: {
 		showDialog() {
-			this.$emit('dialogVisibility');
+			this.$emit('dialogVisibilityShow');
+			console.log("minor");
 		},
+		setSelection(buttonLinkValue) {
+			this.$emit('setNewSelection', buttonLinkValue);
+		}
 	}
 }
 </script>

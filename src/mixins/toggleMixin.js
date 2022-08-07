@@ -7,10 +7,10 @@ export default {
 	},
 	methods: {
 		hideDialog() {
-			this.$emit('update:modelValue', false);
+			this.$emit('update:show', false);
 		}
 	},
 	mounted() {
-		console.log(this.props.show);
+		console.log(this.show);
 	},
 }
