@@ -5,12 +5,25 @@
 			<div class="grid_wrapper">
 				<div class="grid_item" v-for="input in inputs" :key="input.id">
 					<p class="label">{{input.title}}</p>
-					<custom-input class="custom-element" v-if="input?.mask" :inputType="input.type" :placeholderValue="input.placeholder" v-maska="input.mask"></custom-input>
-					<custom-input class="custom-element" v-else :inputType="input.type" :placeholderValue="input.placeholder"></custom-input>
+					<custom-input class="custom-element" 
+						v-if="input?.mask" 
+						:id="input.id" 
+						:inputType="input.type" 
+						:placeholderValue="input.placeholder" 
+						:model-value="input.text" 
+						@update:model-value="changeInputModelValue"
+						v-maska="input.mask"></custom-input>
+					<custom-input class="custom-element" 
+						v-else 
+						:id="input.id" 
+						:inputType="input.type" 
+						:placeholderValue="input.placeholder" 
+						:model-value="input.text" 
+						@update:model-value="changeInputModelValue"></custom-input>
 				</div>
 				<div class="grid_item select_wrapper">
 					<p class="label">Город*</p>
-					<custom-select class="custom-element" v-model="selection" :options="dialogOptions"></custom-select>
+					<custom-select class="custom-element" v-model="selectedCity" :options="dialogOptions"></custom-select>
 				</div>
 
 				<custom-button class="btn" :buttonObject="this.button"></custom-button>
@@ -21,6 +34,7 @@
 
 <script>
 import toggleMixin from '@/mixins/toggleMixin';
+import {mapState, mapGetters, mapActions, mapMutations} from "vuex";
 // import useVuelidate from '@vuelidate/core'
 // import { required, email } from '@vuelidate/validators'
 
@@ -33,28 +47,28 @@ export default {
 
 	data() {
 		return {
-			button: {id: 1, value: "Отправить", type: "text"},
-			inputs: [
-				{id: 1, title: "Имя*", placeholder: "Иван Иванов", type: "tel", regex: "dfgdfgdf"},
-				{id: 2, title: "Телефон*", placeholder: "+7 (___) ___-__-__", type: "text", mask: '+7 (###) ###-##-##'},
-				{id: 3, title: "Email*", placeholder: "you@example.com", type: "email", regex: "fdhfgsdh"},
-			],
+			// button: {id: 1, value: "Отправить", type: "text"},
+			// inputs: [
+			// 	{id: 1, title: "Имя*", placeholder: "Иван Иванов", type: "tel", regex: "dfgdfgdf"},
+			// 	{id: 2, title: "Телефон*", placeholder: "+7 (___) ___-__-__", type: "text", mask: '+7 (###) ###-##-##'},
+			// 	{id: 3, title: "Email*", placeholder: "you@example.com", type: "email", regex: "fdhfgsdh"},
+			// ],
 			// sortOptions: [
 			// 	{value: "msk", name: "Москва"},
 			// 	{value: "spb", name: "Санкт-Петербург"},
 			// ],
+			renderKey: 1,
+			selectedCity: "",
+			dialogOptions: [],
 		}
 	},
-	props: {
-		selection: {
-			type: String,
-		},
-		dialogOptions: {
-			type: Array,
-			default: () => []
-		},
-	},
 	mixins: [toggleMixin],
+	beforeUpdate() {
+		this.dialogOptions = this.$store.getters['aboutView/getCityes'];
+		this.selectedCity = this.$store.getters['aboutView/getSelectedCityValue'];
+		console.log(this.dialogOptions);
+		console.log(this.selectedCity);
+	},
 
 	// validations() {
 	// 	return {
@@ -67,6 +81,25 @@ export default {
 	// 		},
 	// 	}
   	// },
+
+	methods: {
+		...mapMutations({
+			changeInputModelValue: "dialog/changeInputModelValue",
+		}),
+		...mapActions({
+			sendForm: "dialog/sendForm",
+		}),
+	},
+	computed: {
+		...mapState({
+			button: state => state.dialog.button,
+			inputs: state => state.dialog.inputs,
+			response: state => state.dialog.response,
+		}),
+		...mapGetters({
+			getInputs: "dialog/getInputs",
+		}),
+	}
 }
 </script>
 
