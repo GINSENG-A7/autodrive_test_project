@@ -15,13 +15,12 @@ export const dialogModule = {
 	},
 	mutations: {
 		changeInputModelValue(state, { id, value }) {
-			[...state.inputs].filter(input => {
+			[...state.inputs].map(input => {
 				if(input.id === id) {
-					return true;
+					input.text = value;
 				}
-				return false;
-			})[0].text = value;
-
+			})
+			
 			console.log(state.inputs);
 		}
 	},
