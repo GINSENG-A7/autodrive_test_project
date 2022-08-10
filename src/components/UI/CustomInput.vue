@@ -1,5 +1,9 @@
 <template>
-	<input class="custom-input" :type="inputType" :placeholder="placeholderValue" @input="updateInput" :value="modelValue">
+	<input class="custom-input" 
+	:type="inputType" 
+	:placeholder="placeholderValue" 
+	@input="updateInput" 
+	:value="modelValue">
 </template>
 
 <script>
@@ -25,7 +29,7 @@ export default {
 			this.$emit("update:modelValue", { 
 				id: this.id,
 				value: event.target.value 
-			})
+			});
 		}
 	},
 }

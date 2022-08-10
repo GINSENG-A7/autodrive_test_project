@@ -3,7 +3,7 @@
 		<div class="dialog__container" @click.stop>
 			<h2>Заказать звонок</h2>
 			<div class="grid_wrapper">
-				<div class="grid_item" v-for="input in inputs" :key="input.id">
+				<div class="grid_item" v-for="(input, i) in getInputs" :key="i">
 					<p class="label">{{input.title}}</p>
 					<custom-input class="custom-element" 
 						v-if="input?.mask" 
@@ -12,21 +12,23 @@
 						:placeholderValue="input.placeholder" 
 						:model-value="input.text" 
 						@update:model-value="changeInputModelValue"
-						v-maska="input.mask"></custom-input>
+						v-maska="input.mask">
+					</custom-input>
 					<custom-input class="custom-element" 
 						v-else 
 						:id="input.id" 
 						:inputType="input.type" 
 						:placeholderValue="input.placeholder" 
 						:model-value="input.text" 
-						@update:model-value="changeInputModelValue"></custom-input>
+						@update:model-value="changeInputModelValue">
+					</custom-input>
 				</div>
 				<div class="grid_item select_wrapper">
 					<p class="label">Город*</p>
-					<custom-select class="custom-element" v-model="selectedCity" :options="dialogOptions"></custom-select>
+					<custom-select class="custom-element" :model-value="selectedCityValue" @update:model-value="setNewSelectionToParent" :options="dialogOptions"></custom-select>
 				</div>
 
-				<custom-button class="btn" :buttonObject="this.button"></custom-button>
+				<custom-button class="btn" :buttonObject="this.button" @click.prevent.stop="sendForm(selectedCityId)"></custom-button>
 			</div>
 		</div>
 	</form>
@@ -35,6 +37,7 @@
 <script>
 import toggleMixin from '@/mixins/toggleMixin';
 import {mapState, mapGetters, mapActions, mapMutations} from "vuex";
+import axios from 'axios';
 // import useVuelidate from '@vuelidate/core'
 // import { required, email } from '@vuelidate/validators'
 
@@ -57,17 +60,18 @@ export default {
 			// 	{value: "msk", name: "Москва"},
 			// 	{value: "spb", name: "Санкт-Петербург"},
 			// ],
-			renderKey: 1,
-			selectedCity: "",
+			selectedCityValue: "",
+			selectedCityId: "",
 			dialogOptions: [],
 		}
 	},
 	mixins: [toggleMixin],
 	beforeUpdate() {
 		this.dialogOptions = this.$store.getters['aboutView/getCityes'];
-		this.selectedCity = this.$store.getters['aboutView/getSelectedCityValue'];
-		console.log(this.dialogOptions);
+		this.selectedCityValue = this.$store.getters['aboutView/getSelectedCityValue'];
+		this.selectedCityId = this.$store.getters['aboutView/getSelectedCityId'];
 		console.log(this.selectedCity);
+		console.log(this.selectedCityId);
 	},
 
 	// validations() {
@@ -83,6 +87,9 @@ export default {
   	// },
 
 	methods: {
+		setNewSelectionToParent(targetValue) {
+			this.$store.commit('aboutView/setSelectedCityValue', targetValue);
+		},
 		...mapMutations({
 			changeInputModelValue: "dialog/changeInputModelValue",
 		}),

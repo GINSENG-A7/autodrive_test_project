@@ -14,6 +14,15 @@ export const aboutViewModule = {
 		getSelectedCityValue(state) {
 			return state.selectedCityValue;
 		},
+		getSelectedCityId(state) {
+			state.cityes.map(city => {
+				console.log(city);
+				if (city.value === state.selectedCityValue) {
+					return city.id;
+				}
+				return null;
+			});
+		},
 	},
 	mutations: {
 		setSelectedCityValue(state, cityValue) {

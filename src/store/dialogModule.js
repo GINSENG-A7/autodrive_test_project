@@ -1,3 +1,5 @@
+import axios from 'axios'; 
+
 export const dialogModule = {
 	state: () => ({
 		button: {id: 1, value: "Отправить", type: "text"},
@@ -22,27 +24,30 @@ export const dialogModule = {
 			})
 			
 			console.log(state.inputs);
+
 		}
 	},
 	actions: {
-		async sendForm({state, commit, dispatch}) {
+		async sendForm({state, commit, dispatch}, cityId) {
 			try {
-				const response = await axios.get("http://hh.autodrive-agency.ru/test-tasks/front/task-7/", {
+				console.log("fetching");
+				const localResponse = await axios.get("http://hh.autodrive-agency.ru/test-tasks/front/task-7/", {
 					params: {
-						_name: state.inputs.filter(input => {input.id === 1})[0].modelValue,
-						_phone: state.inputs.filter(input => {input.id === 2})[0].modelValue,
-						_email: state.inputs.filter(input => {input.id === 3})[0].modelValue,
-						_city_id: this.$store.getters['aboutView/getCityes'].
-						filter(city => {
-							city.value === this.$store.getters['aboutView/getSelectedCityValue']
-						})[0].id,
+						name: state.inputs.find(({id}) => id === 1).text,
+						phone: state.inputs.find(({id}) => id === 2).text,
+						email: state.inputs.find(({id}) => id === 3).text,
+						// _city_id: this.$store.getters['aboutView/getCityes'].
+						// filter(city => {
+						// 	city.value === this.$store.getters['aboutView/getSelectedCityValue']
+						// })[0].id,
+						city_id: cityId,
 					} 
 				});
-				commit("response", response.data);
+				commit("dialog/response", localResponse.data);
 			}
 			catch(e) {
-				commit("setLoading", false);
-				alert("Ошибка сервера");
+				console.log(e);
+				// alert("Ошибка сервера");
 			}
 		},
 	},
