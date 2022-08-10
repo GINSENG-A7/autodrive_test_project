@@ -29,26 +29,18 @@ export const dialogModule = {
 	},
 	actions: {
 		async sendForm({state, commit, dispatch}, cityId) {
-			try {
-				console.log("fetching");
-				const localResponse = await axios.get("http://hh.autodrive-agency.ru/test-tasks/front/task-7/", {
-					params: {
-						name: state.inputs.find(({id}) => id === 1).text,
-						phone: state.inputs.find(({id}) => id === 2).text,
-						email: state.inputs.find(({id}) => id === 3).text,
-						// _city_id: this.$store.getters['aboutView/getCityes'].
-						// filter(city => {
-						// 	city.value === this.$store.getters['aboutView/getSelectedCityValue']
-						// })[0].id,
-						city_id: cityId,
-					} 
-				});
-				commit("dialog/response", localResponse.data);
-			}
-			catch(e) {
-				console.log(e);
-				// alert("Ошибка сервера");
-			}
+			await axios.post("http://hh.autodrive-agency.ru/test-tasks/front/task-7/", {
+				name: state.inputs.find(({id}) => id === 1).text,
+				phone: "+79302451286",	
+				email: state.inputs.find(({id}) => id === 3).text,
+				city_id: 1,
+			})
+			.then((result) => {
+				console.log(result)
+			})
+			.catch((result)=> {
+				console.log(result)
+			})
 		},
 	},
 	namespaced: true,
