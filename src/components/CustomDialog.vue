@@ -25,13 +25,15 @@
 				</div>
 				<div class="grid_item select_wrapper">
 					<p class="label">Город*</p>
-					<custom-select class="custom-element" :model-value="selectedCityValue" @update:model-value="setNewSelectionToParent" :options="dialogOptions"></custom-select>
+					<custom-select class="custom-element" :model-value="this.$store.getters['aboutView/getSelectedCityValue']" @update:model-value="setNewSelectionToParent" :options="this.$store.getters['aboutView/getCityes']"></custom-select>
 				</div>
 
-				<custom-button class="btn" :buttonObject="this.button" @click.prevent.stop="sendForm(selectedCityId)"></custom-button>
+				<custom-button class="btn" :buttonObject="this.button" @click.prevent.stop="sendForm(this.$store.getters['aboutView/getSelectedCityId'])"></custom-button>
 			</div>
+			<popup v-if="visibility === true">
+				<div v-html="getResponse"></div>
+			</popup>
 		</div>
-		<popup v-if="popupIsVisible">{{ response }}</popup>
 	</form>
 </template>
 
@@ -39,52 +41,43 @@
 import toggleMixin from '@/mixins/toggleMixin';
 import {mapState, mapGetters, mapActions, mapMutations} from "vuex";
 import axios from 'axios';
-import Popup from './Popup.vue';
+// import Popup from './Popup.vue';
 // import useVuelidate from '@vuelidate/core'
 // import { required, email } from '@vuelidate/validators'
 
 export default {
     name: "custom-dialog",
-    // setup () {
-    // 	return { v$: useVuelidate() }
-    // },
+
     data() {
         return {
-            // button: {id: 1, value: "Отправить", type: "text"},
-            // inputs: [
-            // 	{id: 1, title: "Имя*", placeholder: "Иван Иванов", type: "tel", regex: "dfgdfgdf"},
-            // 	{id: 2, title: "Телефон*", placeholder: "+7 (___) ___-__-__", type: "text", mask: '+7 (###) ###-##-##'},
-            // 	{id: 3, title: "Email*", placeholder: "you@example.com", type: "email", regex: "fdhfgsdh"},
-            // ],
-            // sortOptions: [
-            // 	{value: "msk", name: "Москва"},
-            // 	{value: "spb", name: "Санкт-Петербург"},
-            // ],
             selectedCityValue: "",
             selectedCityId: "",
             dialogOptions: [],
-			popupIsVisible: false,
+			// nameRegex: /^[a-zа-яё ,.'-]{2,}$/iu ,
+			// emailRegex: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ ,
         };
     },
     mixins: [toggleMixin],
-    beforeUpdate() {
-        this.dialogOptions = this.$store.getters["aboutView/getCityes"];
-        this.selectedCityValue = this.$store.getters["aboutView/getSelectedCityValue"];
-        this.selectedCityId = this.$store.getters["aboutView/getSelectedCityId"];
-        // console.log(this.selectedCity);
-        // console.log(this.selectedCityId);
-    },
-    // validations() {
-    // 	return {
-    // 		email: {
-    // 			required, email
-    // 		},
-    // 		name: {
-    // 			required, 
-    // 			min: minLength(2)
-    // 		},
-    // 	}
+    // beforeUpdate() {
+    //     this.dialogOptions = this.$store.getters["aboutView/getCityes"];
+    //     this.selectedCityValue = this.$store.getters["aboutView/getSelectedCityValue"];
+    //     this.selectedCityId = this.$store.getters["aboutView/getSelectedCityId"];
+    //     console.log(this.selectedCityValue);
+    //     console.log(this.selectedCityId);
     // },
+
+
+	created() {
+		this.unwatch = this.$store.watch(
+		(state, getters) => state.popupIsVisible,
+		(newValue, oldValue) => {
+			console.log(newValue);
+		},);
+	},
+	beforeDestroy() {
+		this.unwatch();
+	},
+
     methods: {
         setNewSelectionToParent(targetValue) {
             this.$store.commit("aboutView/setSelectedCityValue", targetValue);
@@ -106,12 +99,19 @@ export default {
             getInputs: "dialog/getInputs",
             getResponse: "dialog/getResponse",
         }),
+		visibility: {
+			get () {
+				return this.$store.getters['aboutView/getPopupVisibility']
+			},
+			set (value) {
+				this.$store.commit('aboutView/setPopupVisibility', value)
+			},
+		}
     },
 	watch: {
-		getResponse: {
-			handler(newValue) {
-				console.log(newValue);
-			}
+		response(newValue) {
+			console.log(this.visibility);
+			this.visibility = true;
 		}
 	},
 }

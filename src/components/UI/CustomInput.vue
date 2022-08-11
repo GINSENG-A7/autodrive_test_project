@@ -7,6 +7,10 @@
 </template>
 
 <script>
+import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+import { helpers } from 'vuelidate/lib/validators'
+
 export default {
 	name: "custom-input",
 	props: {
@@ -32,6 +36,30 @@ export default {
 			});
 		}
 	},
+
+	// setup () {
+    // 	return { v$: useVuelidate() }
+    // },
+
+	// validations () {
+	// 	const textRegex = helpers.regex(/^[a-zа-яё ,.'-]{2,}$/iu);
+	// 	const emailRegex = helpers.regex(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+
+	// 	const localRules = {
+	// 		modelValue: { required }
+	// 	}
+	// 	if (this.inputType == "text") {
+	// 		localRules.modelValue = {
+	// 			required, textRegex
+	// 		}
+	// 	}
+	// 	else if (this.inputType == "email") {
+	// 		localRules.modelValue = {
+	// 			required, emailRegex
+	// 		}
+	// 	}
+	// 	return localRules
+	// },
 }
 </script>
 

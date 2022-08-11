@@ -38,6 +38,7 @@ export default {
 		...mapState ({
 			cityes: state => state.aboutView.cityes,
 			selectedCityValue: state => state.aboutView.selectedCityValue,
+			popupIsVisible: state => state.aboutView.popupIsVisible,
 		}),
 		...mapGetters ({
 			
