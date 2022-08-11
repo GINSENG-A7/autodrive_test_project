@@ -10,10 +10,14 @@ export const dialogModule = {
 		],
 		response: "",
 	}),
+	
 	getters: {
 		getInputs(state) {
 			return state.inputs;
-		}
+		},
+		getResponse(state) {
+			return state.response;
+		},
 	},
 	mutations: {
 		changeInputModelValue(state, { id, value }) {
@@ -25,16 +29,20 @@ export const dialogModule = {
 			
 			console.log(state.inputs);
 
-		}
+		},
+		setResponse(state, newResponse) {
+			state.response = newResponse;
+		},
 	},
 	actions: {
 		async sendForm({state, commit, dispatch}, cityId) {
+			let localResponse;
 			try {
 				console.log("fetching");
-				const localResponse = await axios.get("http://hh.autodrive-agency.ru/test-tasks/front/task-7/", {
+				localResponse = await axios.post("http://hh.autodrive-agency.ru/test-tasks/front/task-7/", {
 					params: {
 						name: state.inputs.find(({id}) => id === 1).text,
-						phone: state.inputs.find(({id}) => id === 2).text,
+						phone: state.inputs.find(({id}) => id === 2).text.trim().replace(/[-/(/)/ ]/g, ''),
 						email: state.inputs.find(({id}) => id === 3).text,
 						// _city_id: this.$store.getters['aboutView/getCityes'].
 						// filter(city => {
@@ -43,10 +51,12 @@ export const dialogModule = {
 						city_id: cityId,
 					} 
 				});
-				commit("dialog/response", localResponse.data);
+				commit("setResponse", localResponse.data);
 			}
 			catch(e) {
 				console.log(e);
+				commit("setResponse", e.response.data);
+				console.log(state.response);
 				// alert("Ошибка сервера");
 			}
 		},
