@@ -3,70 +3,117 @@
 		<div class="dialog__container" @click.stop>
 			<h2>Заказать звонок</h2>
 			<div class="grid_wrapper">
-				<div class="grid_item" v-for="input in inputs" :key="input.id">
+				<div class="grid_item" v-for="(input, i) in getInputs" :key="i">
 					<p class="label">{{input.title}}</p>
-					<custom-input class="custom-element" v-if="input?.mask" :inputType="input.type" :placeholderValue="input.placeholder" v-maska="input.mask"></custom-input>
-					<custom-input class="custom-element" v-else :inputType="input.type" :placeholderValue="input.placeholder"></custom-input>
+					<custom-input class="custom-element" 
+						v-if="input?.mask" 
+						:id="input.id" 
+						:inputType="input.type" 
+						:placeholderValue="input.placeholder" 
+						:model-value="input.text" 
+						@update:model-value="changeInputModelValue"
+						v-maska="input.mask">
+					</custom-input>
+					<custom-input class="custom-element" 
+						v-else 
+						:id="input.id" 
+						:inputType="input.type" 
+						:placeholderValue="input.placeholder" 
+						:model-value="input.text" 
+						@update:model-value="changeInputModelValue">
+					</custom-input>
 				</div>
 				<div class="grid_item select_wrapper">
 					<p class="label">Город*</p>
-					<custom-select class="custom-element" v-model="selection" :options="dialogOptions"></custom-select>
+					<custom-select class="custom-element" :model-value="this.$store.getters['aboutView/getSelectedCityValue']" @update:model-value="setNewSelectionToParent" :options="this.$store.getters['aboutView/getCityes']"></custom-select>
 				</div>
 
-				<custom-button class="btn" :buttonObject="this.button"></custom-button>
+				<custom-button class="btn" :buttonObject="this.button" @click.prevent.stop="sendForm(this.$store.getters['aboutView/getSelectedCityId']), hideDialog()"></custom-button>
 			</div>
+			<!-- <popup v-if="visibility === true">
+				<div v-html="getResponse"></div>
+			</popup> -->
 		</div>
 	</form>
 </template>
 
 <script>
 import toggleMixin from '@/mixins/toggleMixin';
+import {mapState, mapGetters, mapActions, mapMutations} from "vuex";
+import axios from 'axios';
+// import Popup from './Popup.vue';
 // import useVuelidate from '@vuelidate/core'
 // import { required, email } from '@vuelidate/validators'
 
 export default {
-	name: "custom-dialog",
+    name: "custom-dialog",
 
-	// setup () {
-    // 	return { v$: useVuelidate() }
-  	// },
+    data() {
+        return {
+            selectedCityValue: "",
+            selectedCityId: "",
+            dialogOptions: [],
+			// nameRegex: /^[a-zа-яё ,.'-]{2,}$/iu ,
+			// emailRegex: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ ,
+        };
+    },
+    mixins: [toggleMixin],
+    // beforeUpdate() {
+    //     this.dialogOptions = this.$store.getters["aboutView/getCityes"];
+    //     this.selectedCityValue = this.$store.getters["aboutView/getSelectedCityValue"];
+    //     this.selectedCityId = this.$store.getters["aboutView/getSelectedCityId"];
+    //     console.log(this.selectedCityValue);
+    //     console.log(this.selectedCityId);
+    // },
 
-	data() {
-		return {
-			button: {id: 1, value: "Отправить", type: "text"},
-			inputs: [
-				{id: 1, title: "Имя*", placeholder: "Иван Иванов", type: "tel", regex: "dfgdfgdf"},
-				{id: 2, title: "Телефон*", placeholder: "+7 (___) ___-__-__", type: "text", mask: '+7 (###) ###-##-##'},
-				{id: 3, title: "Email*", placeholder: "you@example.com", type: "email", regex: "fdhfgsdh"},
-			],
-			// sortOptions: [
-			// 	{value: "msk", name: "Москва"},
-			// 	{value: "spb", name: "Санкт-Петербург"},
-			// ],
-		}
-	},
-	props: {
-		selection: {
-			type: String,
-		},
-		dialogOptions: {
-			type: Array,
-			default: () => []
-		},
-	},
-	mixins: [toggleMixin],
 
-	// validations() {
-	// 	return {
-	// 		email: {
-	// 			required, email
-	// 		},
-	// 		name: {
-	// 			required, 
-	// 			min: minLength(2)
-	// 		},
+	// created() {
+	// 	this.unwatch = this.$store.watch(
+	// 	(state, getters) => state.popupIsVisible,
+	// 	(newValue, oldValue) => {
+	// 		console.log(newValue);
+	// 	},);
+	// },
+	// beforeDestroy() {
+	// 	this.unwatch();
+	// },
+
+    methods: {
+        setNewSelectionToParent(targetValue) {
+            this.$store.commit("aboutView/setSelectedCityValue", targetValue);
+        },
+        ...mapMutations({
+            changeInputModelValue: "dialog/changeInputModelValue",
+        }),
+        ...mapActions({
+            sendForm: "dialog/sendForm",
+        }),
+    },
+    computed: {
+        ...mapState({
+            button: state => state.dialog.button,
+            inputs: state => state.dialog.inputs,
+            response: state => state.dialog.response,
+        }),
+        ...mapGetters({
+            getInputs: "dialog/getInputs",
+            getResponse: "dialog/getResponse",
+        }),
+		// visibility: {
+		// 	get () {
+		// 		return this.$store.getters['aboutView/getPopupVisibility']
+		// 	},
+		// 	set (value) {
+		// 		this.$store.commit('aboutView/setPopupVisibility', value)
+		// 	},
+		// }
+    },
+	// watch: {
+	// 	response(newValue) {
+	// 		console.log(this.visibility);
+	// 		this.visibility = true;
 	// 	}
-  	// },
+	// },
 }
 </script>
 

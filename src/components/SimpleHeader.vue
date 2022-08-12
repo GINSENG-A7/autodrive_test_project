@@ -20,11 +20,11 @@ export default {
 	methods: {
 		showDialog() {
 			this.$emit('dialogVisibilityShow');
-			console.log("minor");
 		},
 		setSelection(buttonLinkValue) {
-			this.$emit('setNewSelection', buttonLinkValue);
-		}
+			// this.$emit('setNewSelection', buttonLinkValue);
+			this.$store.commit('aboutView/setSelectedCityValue', buttonLinkValue);
+		},
 	}
 }
 </script>
