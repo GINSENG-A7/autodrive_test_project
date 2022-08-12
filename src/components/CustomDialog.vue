@@ -28,7 +28,7 @@
 					<custom-select class="custom-element" :model-value="this.$store.getters['aboutView/getSelectedCityValue']" @update:model-value="setNewSelectionToParent" :options="this.$store.getters['aboutView/getCityes']"></custom-select>
 				</div>
 
-				<custom-button class="btn" :buttonObject="this.button" @click.prevent.stop="sendForm(this.$store.getters['aboutView/getSelectedCityId'])"></custom-button>
+				<custom-button class="btn" :buttonObject="this.button" @click.prevent.stop="sendForm(this.$store.getters['aboutView/getSelectedCityId']), hideDialog()"></custom-button>
 			</div>
 			<popup v-if="visibility === true">
 				<div v-html="getResponse"></div>

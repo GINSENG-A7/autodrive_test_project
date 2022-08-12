@@ -16,7 +16,7 @@ export const dialogModule = {
 			return state.inputs;
 		},
 		getResponse(state) {
-			return state.response;
+			return state.response.data;
 		},
 	},
 	mutations: {
@@ -53,7 +53,8 @@ export const dialogModule = {
 			})
 			.then((result) => {
 				state.response = result;
-				console.log(state.response.data);
+				// console.log(state.response.data);
+				
 			})
 			.catch((result)=> {
 				console.log(result);
