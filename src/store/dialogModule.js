@@ -9,6 +9,7 @@ export const dialogModule = {
 			{id: 3, title: "Email*", placeholder: "you@example.com", type: "email", regex: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, text: ""},
 		],
 		response: "",
+		countOfRequests: 0,
 	}),
 	
 	getters: {
@@ -16,8 +17,11 @@ export const dialogModule = {
 			return state.inputs;
 		},
 		getResponse(state) {
-			return state.response.data;
+			return state.response;
 		},
+		getCountOfRequests(state) {
+			return state.countOfRequests;
+		}
 	},
 	mutations: {
 		changeInputModelValue(state, { id, value }) {
@@ -52,12 +56,15 @@ export const dialogModule = {
 				city_id: payload.id,
 			})
 			.then((result) => {
-				state.response = result;
-				// console.log(state.response.data);
-				
+				state.response = result.data;
+				state.countOfRequests++;
+				state.inputs.map(input => input.text = "");
+				console.log(state.response);
 			})
 			.catch((result)=> {
-				console.log(result);
+				state.response = result.message;
+				state.countOfRequests++;
+				console.log(state.response);
 			})
 		},
 	},

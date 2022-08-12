@@ -30,9 +30,9 @@
 
 				<custom-button class="btn" :buttonObject="this.button" @click.prevent.stop="sendForm(this.$store.getters['aboutView/getSelectedCityId']), hideDialog()"></custom-button>
 			</div>
-			<popup v-if="visibility === true">
+			<!-- <popup v-if="visibility === true">
 				<div v-html="getResponse"></div>
-			</popup>
+			</popup> -->
 		</div>
 	</form>
 </template>
@@ -67,16 +67,16 @@ export default {
     // },
 
 
-	created() {
-		this.unwatch = this.$store.watch(
-		(state, getters) => state.popupIsVisible,
-		(newValue, oldValue) => {
-			console.log(newValue);
-		},);
-	},
-	beforeDestroy() {
-		this.unwatch();
-	},
+	// created() {
+	// 	this.unwatch = this.$store.watch(
+	// 	(state, getters) => state.popupIsVisible,
+	// 	(newValue, oldValue) => {
+	// 		console.log(newValue);
+	// 	},);
+	// },
+	// beforeDestroy() {
+	// 	this.unwatch();
+	// },
 
     methods: {
         setNewSelectionToParent(targetValue) {
@@ -99,21 +99,21 @@ export default {
             getInputs: "dialog/getInputs",
             getResponse: "dialog/getResponse",
         }),
-		visibility: {
-			get () {
-				return this.$store.getters['aboutView/getPopupVisibility']
-			},
-			set (value) {
-				this.$store.commit('aboutView/setPopupVisibility', value)
-			},
-		}
+		// visibility: {
+		// 	get () {
+		// 		return this.$store.getters['aboutView/getPopupVisibility']
+		// 	},
+		// 	set (value) {
+		// 		this.$store.commit('aboutView/setPopupVisibility', value)
+		// 	},
+		// }
     },
-	watch: {
-		response(newValue) {
-			console.log(this.visibility);
-			this.visibility = true;
-		}
-	},
+	// watch: {
+	// 	response(newValue) {
+	// 		console.log(this.visibility);
+	// 		this.visibility = true;
+	// 	}
+	// },
 }
 </script>
 

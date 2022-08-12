@@ -6,7 +6,6 @@ export const aboutViewModule = {
 			{id: 3, value: "kzn", name: "Казань"},
 		],
 		selectedCityValue: "",
-		popupIsVisible: false,
 	}),
 	getters: {
 		getCityes(state) {
@@ -18,18 +17,12 @@ export const aboutViewModule = {
 		getSelectedCityId(state) {
 			return state.cityes.find(({value}) => value === state.selectedCityValue);
 		},
-		getPopupVisibility(state) {
-			return state.popupIsVisible;
-		}
 	},
 	mutations: {
 		setSelectedCityValue(state, cityValue) {
 			state.selectedCityValue = cityValue;
 			// console.log(state.selectedCityValue);
 		},
-		setPopupVisibility(state, payload){
-            state.popupIsVisible = payload;
-        }
 	},
 	actions: {
 		// setSelectedCityValueAction({state, commit, dispatch}, value) {

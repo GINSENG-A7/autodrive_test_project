@@ -1,7 +1,10 @@
 <template>
 	<div class="page">
 		<simple-header @dialogVisibilityShow="showDialog" @setNewSelection="setSelection"></simple-header>
-		<custom-dialog v-model:show="dialogIsVisible" :dialogOptions="cityes" :model-value="selectedCityValue"></custom-dialog>	
+		<custom-dialog v-model:show="dialogIsVisible" :dialogOptions="cityes" :model-value="selectedCityValue"></custom-dialog>
+		<popup v-model:show="popupIsVisible">
+			<div v-html="response"></div>
+		</popup>
 	</div>
 </template>
 
@@ -12,6 +15,7 @@ export default {
 	data() {
 		return {
 			dialogIsVisible: false,
+			popupIsVisible: false,
 			// cityes: [
 			// 	{id: 1, value: "msk", name: "Москва"},
 			// 	{id: 2, value: "spb", name: "Санкт-Петербург"},
@@ -38,12 +42,25 @@ export default {
 		...mapState ({
 			cityes: state => state.aboutView.cityes,
 			selectedCityValue: state => state.aboutView.selectedCityValue,
-			popupIsVisible: state => state.aboutView.popupIsVisible,
 		}),
 		...mapGetters ({
-			
+			countOfRequests: "dialog/getCountOfRequests",
+			response: "dialog/getResponse",
 		}),
-	}
+		// response: {
+		// 	get () {
+		// 		return this.$store.getters['dialog/getResponse']
+		// 	},
+		// 	set (value) {
+		// 		this.$store.commit('dialog/setResponse', value)
+		// 	},
+		// }
+	},
+	watch: {
+		countOfRequests(newValue) {
+			this.popupIsVisible = true;
+		}
+	},
 }
 </script>
 
